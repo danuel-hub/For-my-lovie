@@ -86,14 +86,23 @@ button {
     position: absolute;
     width: 100%;
     display: flex;
-    gap: 15px;
-    animation: scroll 20s linear infinite;
+    gap: 20px;
+    animation: scroll 25s linear infinite;
     z-index: 1;
 }
 
 .carousel img {
     width: 150px;
-    border-radius: 15px;
+    background: white;
+    padding: 10px 10px 35px 10px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    transform: rotate(calc(-6deg + 12deg * var(--rand)));
+    transition: transform 0.3s ease;
+}
+
+.carousel img:hover {
+    transform: scale(1.1) rotate(0deg);
 }
 
 .top-carousel { top: 20px; }
@@ -146,7 +155,7 @@ const noTexts = [
 /* NO BUTTON */
 noBtn.addEventListener("click", () => {
 
-    yesScale += 0.15;
+    yesScale += 0.25; // ADJUST THIS TO CONTROL GROW SPEED
     noScale -= 0.08;
     if(noScale <= 0.3) noScale = 0.3;
 
@@ -161,7 +170,7 @@ noBtn.addEventListener("click", () => {
     }
 });
 
-/* TYPEWRITER FUNCTION */
+/* TYPEWRITER */
 function typeWriter(element, text, speed = 40) {
     element.innerHTML = "";
     let i = 0;
@@ -240,7 +249,7 @@ yesBtn.addEventListener("click", () => {
                 setTimeout(() => {
 
                     const carouselImages = [...images, ...images].map(img => 
-                        `<img src="${img}">`
+                        `<img src="${img}" style="--rand:${Math.random()}">`
                     ).join("");
 
                     document.body.insertAdjacentHTML("beforeend", `
@@ -262,7 +271,7 @@ yesBtn.addEventListener("click", () => {
                 }, 800);
             });
 
-        }, 5000);
+        }, 12000);
 
     }, 800);
 });
