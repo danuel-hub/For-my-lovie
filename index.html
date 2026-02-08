@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>For my lovie💖</title>
+<title>For my lovie 💖</title>
 
 <style>
 body {
@@ -17,16 +17,9 @@ body {
     overflow: hidden;
 }
 
-/* Fade Animation */
-.fade-out {
-    opacity: 0;
-    transition: opacity 0.8s ease;
-}
-
-.fade-in {
-    opacity: 1;
-    transition: opacity 0.8s ease;
-}
+/* Fade */
+.fade-out { opacity: 0; transition: opacity 0.8s ease; }
+.fade-in { opacity: 1; transition: opacity 0.8s ease; }
 
 .container {
     background: white;
@@ -37,7 +30,7 @@ body {
     max-width: 95%;
     text-align: center;
     position: relative;
-    z-index: 1; /* stay above top/bottom images */
+    z-index: 2;
 }
 
 .photo {
@@ -64,14 +57,8 @@ button {
     transition: 0.3s;
 }
 
-#yesBtn {
-    background: #ff4d6d;
-    color: white;
-}
-
-#noBtn {
-    background: #ccc;
-}
+#yesBtn { background: #ff4d6d; color: white; }
+#noBtn { background: #ccc; }
 
 .slideshow {
     width: 260px;
@@ -93,6 +80,29 @@ button {
     0% { transform: translateY(100vh); opacity: 1; }
     100% { transform: translateY(-10vh); opacity: 0; }
 }
+
+/* Horizontal moving carousel */
+.carousel {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    gap: 15px;
+    animation: scroll 20s linear infinite;
+    z-index: 1;
+}
+
+.carousel img {
+    width: 150px;
+    border-radius: 15px;
+}
+
+.top-carousel { top: 20px; }
+.bottom-carousel { bottom: 20px; }
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
 </style>
 </head>
 
@@ -104,7 +114,6 @@ button {
 <div class="container fade-in" id="mainBox">
     <img src="her.jpg" class="photo">
     <h1>Hi, lovie ko! Will you be my Valentine’s date? 💖</h1>
-
     <div class="buttons">
         <button id="yesBtn">Yes 💕</button>
         <button id="noBtn">No 😢</button>
@@ -118,16 +127,12 @@ const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const bgMusic = document.getElementById("bgMusic");
 const heartbeat = document.getElementById("heartbeat");
+const box = document.getElementById("mainBox");
 
 let yesScale = 1;
 let noScale = 1;
 let textIndex = 0;
 
-/* Scale adjustments */
-const YES_GROW = 0.15;
-const NO_SHRINK = 0.08;
-
-/* NO button drama text */
 const noTexts = [
     "sure ka na?",
     "bakit ayaw mo?",
@@ -138,9 +143,11 @@ const noTexts = [
     "wala ka nang choice"
 ];
 
+/* NO BUTTON */
 noBtn.addEventListener("click", () => {
-    yesScale += YES_GROW;
-    noScale -= NO_SHRINK;
+
+    yesScale += 0.15;
+    noScale -= 0.08;
     if(noScale <= 0.3) noScale = 0.3;
 
     yesBtn.style.transform = `scale(${yesScale})`;
@@ -150,24 +157,29 @@ noBtn.addEventListener("click", () => {
         textIndex++;
         noBtn.innerText = noTexts[textIndex];
     } else {
-        noBtn.style.display = "none"; // hide no button at the end
+        noBtn.style.display = "none";
     }
 });
 
-/* YES button */
+/* TYPEWRITER FUNCTION */
+function typeWriter(element, text, speed = 40) {
+    element.innerHTML = "";
+    let i = 0;
+    const interval = setInterval(() => {
+        element.innerHTML += text.charAt(i);
+        i++;
+        if(i >= text.length) clearInterval(interval);
+    }, speed);
+}
+
+/* YES BUTTON */
 yesBtn.addEventListener("click", () => {
 
     bgMusic.play();
     heartbeat.play();
 
-    confetti({
-        particleCount: 200,
-        spread: 120,
-        origin: { y: 0.6 }
-    });
+    confetti({ particleCount: 200, spread: 120, origin: { y: 0.6 } });
 
-    const box = document.getElementById("mainBox");
-    box.classList.remove("fade-in");
     box.classList.add("fade-out");
 
     setTimeout(() => {
@@ -178,26 +190,31 @@ yesBtn.addEventListener("click", () => {
             "pic7.jpg","pic8.jpg","pic9.jpg"
         ];
 
-        let index = 0;
-
-        /* Show initial slideshow */
         box.innerHTML = `
-            <h1 style="font-size:22px;">YEHEYYYY WE'RE GONNA HAVE A DATE!!! 💖</h1>
+            <h1 id="typeTitle"></h1>
             <img id="slide" class="slideshow" src="${images[0]}">
-            <p style="margin-top:10px;">
-                Iloveyouuuu da best and pinakamagandang gf in da whole wide world 💖  
-                You're my strength and inspiration.  
-                Nandito lang me always sa tabi mo forever and ever 🥰
-            </p>
+            <p id="typeText"></p>
             <div id="extraBtnArea"></div>
         `;
 
         box.classList.remove("fade-out");
         box.classList.add("fade-in");
 
+        typeWriter(
+            document.getElementById("typeTitle"),
+            "YEHEYYYY WE'RE GONNA HAVE A DATE!!! 💖"
+        );
+
+        setTimeout(() => {
+            typeWriter(
+                document.getElementById("typeText"),
+                "Iloveyouuuu da best and pinakamagandang gf in da whole wide world 💖 You're my strength and inspiration. Sana makahanap ka na mapag o OJT han para makapag rides na tayo and bonding na walang pino problema and iniisip. Nandito lang me always sa tabi mo forever and ever 🥰"
+            );
+        }, 2000);
+
+        let index = 0;
         setInterval(() => {
-            index++;
-            if(index >= images.length) index = 0;
+            index = (index + 1) % images.length;
             document.getElementById("slide").src = images[index];
         }, 2500);
 
@@ -218,54 +235,19 @@ yesBtn.addEventListener("click", () => {
 
             document.getElementById("itineraryBtn").addEventListener("click", () => {
 
-                box.classList.remove("fade-in");
                 box.classList.add("fade-out");
 
                 setTimeout(() => {
-                    /* Shuffle function */
-                    function shuffle(array) {
-                        return array.sort(() => Math.random() - 0.5);
-                    }
 
-                    const shuffledImages = shuffle([...images]);
-                    const topImages = shuffledImages.slice(0,4);
-                    const bottomImages = shuffledImages.slice(4,8);
+                    const carouselImages = [...images, ...images].map(img => 
+                        `<img src="${img}">`
+                    ).join("");
 
-                    /* Remove previous top/bottom image divs if any */
-                    const oldTop = document.getElementById("topImages");
-                    const oldBottom = document.getElementById("bottomImages");
-                    if(oldTop) oldTop.remove();
-                    if(oldBottom) oldBottom.remove();
+                    document.body.insertAdjacentHTML("beforeend", `
+                        <div class="carousel top-carousel">${carouselImages}</div>
+                        <div class="carousel bottom-carousel">${carouselImages}</div>
+                    `);
 
-                    /* Top images outside the container */
-                    const topDiv = document.createElement("div");
-                    topDiv.id = "topImages";
-                    topDiv.style.display = "flex";
-                    topDiv.style.justifyContent = "space-around";
-                    topDiv.style.position = "absolute";
-                    topDiv.style.top = "10px";
-                    topDiv.style.left = "50%";
-                    topDiv.style.transform = "translateX(-50%)";
-                    topDiv.style.width = "90%";
-                    topDiv.style.zIndex = "0"; // behind container
-                    topDiv.innerHTML = topImages.map(img => `<img src="${img}" style="width:17%; border-radius:10px;">`).join('');
-                    document.body.appendChild(topDiv);
-
-                    /* Bottom images outside the container */
-                    const bottomDiv = document.createElement("div");
-                    bottomDiv.id = "bottomImages";
-                    bottomDiv.style.display = "flex";
-                    bottomDiv.style.justifyContent = "space-around";
-                    bottomDiv.style.position = "absolute";
-                    bottomDiv.style.bottom = "10px";
-                    bottomDiv.style.left = "50%";
-                    bottomDiv.style.transform = "translateX(-50%)";
-                    bottomDiv.style.width = "90%"; // smaller width
-                    bottomDiv.style.zIndex = "0"; // behind container
-                    bottomDiv.innerHTML = bottomImages.map(img => `<img src="${img}" style="width:17%; border-radius:10px;">`).join('');
-                    document.body.appendChild(bottomDiv);
-
-                    /* Main container info */
                     box.innerHTML = `
                         <h1>Valentine's Date 💖</h1>
                         <p><b>Where:</b> Ilona's Place</p>
@@ -273,11 +255,11 @@ yesBtn.addEventListener("click", () => {
                         <p><b>What to wear:</b> Matchy Black</p>
                         <p><b>What to bring:</b> Just bring your beautiful face and cute little smile 🥰</p>
                     `;
+
                     box.classList.remove("fade-out");
                     box.classList.add("fade-in");
 
                 }, 800);
-
             });
 
         }, 5000);
@@ -299,7 +281,5 @@ function createHeart() {
 setInterval(createHeart, 300);
 
 </script>
-
 </body>
 </html>
-
