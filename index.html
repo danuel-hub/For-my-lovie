@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For my lovie💖</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Fade Animation */
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.fade-in {
+    opacity: 1;
+    transition: opacity 0.8s ease;
+}
+
+.container {
+    background: white;
+    padding: 25px;
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    width: 500px;
+    max-width: 95%;
+    text-align: center;
+    position: relative;
+    z-index: 1; /* stay above top/bottom images */
+}
+
+.photo {
+    width: 260px;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid #ff4d6d;
+    margin-bottom: 25px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+button {
+    padding: 14px 40px;
+    font-size: 22px;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#yesBtn {
+    background: #ff4d6d;
+    color: white;
+}
+
+#noBtn {
+    background: #ccc;
+}
+
+.slideshow {
+    width: 260px;
+    height: 260px;
+    border-radius: 25px;
+    object-fit: cover;
+    margin-top: 10px;
+}
+
+/* Floating hearts */
+.heart {
+    position: absolute;
+    color: #ff4d6d;
+    animation: floatUp 6s linear infinite;
+    z-index: 0;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(100vh); opacity: 1; }
+    100% { transform: translateY(-10vh); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" src="music.mp3" loop></audio>
+<audio id="heartbeat" src="heartbeat.mp3" loop></audio>
+
+<div class="container fade-in" id="mainBox">
+    <img src="her.jpg" class="photo">
+    <h1>Hi, lovie ko! Will you be my Valentine’s date? 💖</h1>
+
+    <div class="buttons">
+        <button id="yesBtn">Yes 💕</button>
+        <button id="noBtn">No 😢</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const bgMusic = document.getElementById("bgMusic");
+const heartbeat = document.getElementById("heartbeat");
+
+let yesScale = 1;
+let noScale = 1;
+let textIndex = 0;
+
+/* Scale adjustments */
+const YES_GROW = 0.15;
+const NO_SHRINK = 0.08;
+
+/* NO button drama text */
+const noTexts = [
+    "sure ka na?",
+    "bakit ayaw mo?",
+    "di mo na ko love no?",
+    "di pwede. ako lang dapat",
+    "hell nawww",
+    "ako nga lang kasi",
+    "wala ka nang choice"
+];
+
+noBtn.addEventListener("click", () => {
+    yesScale += YES_GROW;
+    noScale -= NO_SHRINK;
+    if(noScale <= 0.3) noScale = 0.3;
+
+    yesBtn.style.transform = `scale(${yesScale})`;
+    noBtn.style.transform = `scale(${noScale})`;
+
+    if(textIndex < noTexts.length - 1) {
+        textIndex++;
+        noBtn.innerText = noTexts[textIndex];
+    } else {
+        noBtn.style.display = "none"; // hide no button at the end
+    }
+});
+
+/* YES button */
+yesBtn.addEventListener("click", () => {
+
+    bgMusic.play();
+    heartbeat.play();
+
+    confetti({
+        particleCount: 200,
+        spread: 120,
+        origin: { y: 0.6 }
+    });
+
+    const box = document.getElementById("mainBox");
+    box.classList.remove("fade-in");
+    box.classList.add("fade-out");
+
+    setTimeout(() => {
+
+        const images = [
+            "pic1.jpg","pic2.jpg","pic3.jpg",
+            "pic4.jpg","pic5.jpg","pic6.jpg",
+            "pic7.jpg","pic8.jpg","pic9.jpg"
+        ];
+
+        let index = 0;
+
+        /* Show initial slideshow */
+        box.innerHTML = `
+            <h1 style="font-size:22px;">YEHEYYYY WE GONNA DATE!!! 💖</h1>
+            <img id="slide" class="slideshow" src="${images[0]}">
+            <p style="margin-top:10px;">
+                Iloveyouuuu da best and pinakamagandang gf in da whole wide world 💖  
+                You're my strength and inspiration.  
+                Nandito lang me always sa tabi mo forever and ever 🥰
+            </p>
+            <div id="extraBtnArea"></div>
+        `;
+
+        box.classList.remove("fade-out");
+        box.classList.add("fade-in");
+
+        setInterval(() => {
+            index++;
+            if(index >= images.length) index = 0;
+            document.getElementById("slide").src = images[index];
+        }, 2500);
+
+        setTimeout(() => {
+            document.getElementById("extraBtnArea").innerHTML = `
+                <button id="itineraryBtn" style="
+                    margin-top:20px;
+                    background:#ff4d6d;
+                    color:white;
+                    padding:12px 25px;
+                    font-size:16px;
+                    border-radius:14px;
+                    border:none;
+                    cursor:pointer;">
+                    Click mo to, baby 💌
+                </button>
+            `;
+
+            document.getElementById("itineraryBtn").addEventListener("click", () => {
+
+                box.classList.remove("fade-in");
+                box.classList.add("fade-out");
+
+                setTimeout(() => {
+                    /* Shuffle function */
+                    function shuffle(array) {
+                        return array.sort(() => Math.random() - 0.5);
+                    }
+
+                    const shuffledImages = shuffle([...images]);
+                    const topImages = shuffledImages.slice(0,4);
+                    const bottomImages = shuffledImages.slice(4,8);
+
+                    /* Remove previous top/bottom image divs if any */
+                    const oldTop = document.getElementById("topImages");
+                    const oldBottom = document.getElementById("bottomImages");
+                    if(oldTop) oldTop.remove();
+                    if(oldBottom) oldBottom.remove();
+
+                    /* Top images outside the container */
+                    const topDiv = document.createElement("div");
+                    topDiv.id = "topImages";
+                    topDiv.style.display = "flex";
+                    topDiv.style.justifyContent = "space-around";
+                    topDiv.style.position = "absolute";
+                    topDiv.style.top = "10px";
+                    topDiv.style.left = "50%";
+                    topDiv.style.transform = "translateX(-50%)";
+                    topDiv.style.width = "90%";
+                    topDiv.style.zIndex = "0"; // behind container
+                    topDiv.innerHTML = topImages.map(img => `<img src="${img}" style="width:17%; border-radius:10px;">`).join('');
+                    document.body.appendChild(topDiv);
+
+                    /* Bottom images outside the container */
+                    const bottomDiv = document.createElement("div");
+                    bottomDiv.id = "bottomImages";
+                    bottomDiv.style.display = "flex";
+                    bottomDiv.style.justifyContent = "space-around";
+                    bottomDiv.style.position = "absolute";
+                    bottomDiv.style.bottom = "10px";
+                    bottomDiv.style.left = "50%";
+                    bottomDiv.style.transform = "translateX(-50%)";
+                    bottomDiv.style.width = "90%"; // smaller width
+                    bottomDiv.style.zIndex = "0"; // behind container
+                    bottomDiv.innerHTML = bottomImages.map(img => `<img src="${img}" style="width:17%; border-radius:10px;">`).join('');
+                    document.body.appendChild(bottomDiv);
+
+                    /* Main container info */
+                    box.innerHTML = `
+                        <h1>Valentine's Date 💖</h1>
+                        <p><b>Where:</b> Ilona's Place</p>
+                        <p><b>When:</b> February 14, 2026 - 11:00 AM</p>
+                        <p><b>What to wear:</b> Matchy Black</p>
+                        <p><b>What to bring:</b> Just bring your beautiful face and cute little smile 🥰</p>
+                    `;
+                    box.classList.remove("fade-out");
+                    box.classList.add("fade-in");
+
+                }, 800);
+
+            });
+
+        }, 5000);
+
+    }, 800);
+});
+
+/* Floating hearts */
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (30 + Math.random() * 20) + "px";
+    heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+}
+setInterval(createHeart, 300);
+
+</script>
+
+</body>
+</html>
