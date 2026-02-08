@@ -155,8 +155,8 @@ const noTexts = [
 /* NO BUTTON */
 noBtn.addEventListener("click", () => {
 
-    yesScale += 0.70; // ADJUST THIS TO CONTROL GROW SPEED
-    noScale -= 0.08;
+    yesScale += 0.15; // ADJUST THIS TO CONTROL GROW SPEED
+    noScale -= 0.1;
     if(noScale <= 0.3) noScale = 0.3;
 
     yesBtn.style.transform = `scale(${yesScale})`;
@@ -292,6 +292,7 @@ setInterval(createHeart, 300);
 </script>
 </body>
 </html>
+
 
 
 
